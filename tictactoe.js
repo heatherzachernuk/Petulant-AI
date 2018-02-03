@@ -217,14 +217,6 @@ class ScribbleCanvas {
         this.totalDistance += distanceBetween(this.pointss[i], this.pointss[i+1]);
         this.offset = this.totalDistance;
       }
-  }
-  // TODO:
-  // ScribbleCanvas should accept a set of 2d points to draw between
-  // needs a container that holds all the points you want to draw between 
-  // then it needs to draw the lines bwn those points
-  // to make them scribbly, we'll apply some fancy bizzo
-  // we'll use a boundingClientRect
-  // 
 }
 
 function distanceBetween(a, b){
