@@ -29,12 +29,18 @@ body{
   background-color: black;  
   font-family: 'Raleway', sans-serif;
   user-select: none;
+  display: grid;
+  /* note */
+  grid-template-rows: 1fr 33% 1fr;
+  grid-template-areas: "."
+                       "middle"
+                       ".";
 }
 
 #container{
+  grid-area: middle;
   margin: 0 auto;
   width: 25.5em;
-  margin-top: 5em;
   pointer-events: none;
 }
 
@@ -81,10 +87,12 @@ body{
 
 /* Modal Content */
 #choose-player {
+    grid-area: middle;
     margin: 0 auto;
     margin-top: 2em;
     background-color: #fefefe;
     border: 1px solid #888;
+    box-shadow: 2px 2px 2px;
     width: 13em;
     height: 7em;
     text-align: center;
@@ -127,4 +135,10 @@ body{
   left: 0;
   z-index: 2;
   pointer-events: none;
+}
+
+#restart {
+  grid-area: middle;
+  z-index: 3;
+  box-shadow: 2px 2px 2px;
 }

@@ -5,7 +5,7 @@ window.addEventListener("load", choosePlayer);
 var modalBackground = document.getElementById("modal-background");
 
 function choosePlayer(){
-    modalBackground.style.display = "block";
+  modalBackground.style.display = "block";
 }
 
 var chooseX= document.getElementById("X");
@@ -45,34 +45,34 @@ listener.addEventListener("click", boxClick, false);
 
 // when the player clicks the box
 function boxClick(box) {
-    // if the of the object clicked is not that of the whole screen...
-    if (box.target !== box.currentTarget) {
-        // get the id of that object
-        var clickedBox = (box.target.id);
-        var boxNum = parseInt(clickedBox.slice(1));
-        if(remaining.indexOf(boxNum) > -1){
-          // stick an X in the box
-          listener.removeEventListener("click", boxClick, false);
-          document.getElementById(clickedBox).innerHTML = player;
-          // add that tile to the player's list of tiles
-          playerLocations.push(boxNum);
-          remaining = remaining.filter(element => element != boxNum);
-          console.log(remaining);
-          if(remaining.length === 0){
-            endGame();  
-          }
-        } else return;
-    } 
-    box.stopPropagation();
-    console.log("player moves so far: ", playerLocations);
-    if(playerLocations.length > 2){
-      checkForWin(playerLocations);
-    }
-    // make sure the game is still going before letting the computer make another move
-    if(winScore !== 3 && remaining.length > 0){
-      finalMove(compLocations);
-      setTimeout(compTurn, 1000);
-    }
+  // if the of the object clicked is not that of the whole screen...
+  if (box.target !== box.currentTarget) {
+    // get the id of that object
+    var clickedBox = (box.target.id);
+    var boxNum = parseInt(clickedBox.slice(1));
+    if(remaining.indexOf(boxNum) > -1){
+      // stick an X in the box
+      listener.removeEventListener("click", boxClick, false);
+      document.getElementById(clickedBox).innerHTML = player;
+      // add that tile to the player's list of tiles
+      playerLocations.push(boxNum);
+      remaining = remaining.filter(element => element != boxNum);
+      console.log(remaining);
+      if(remaining.length === 0){
+        endGame();  
+      }
+    } else return;
+  } 
+  box.stopPropagation();
+  console.log("player moves so far: ", playerLocations);
+  if(playerLocations.length > 2){
+    checkForWin(playerLocations);
+  }
+  // make sure the game is still going before letting the computer make another move
+  if(winScore !== 3 && remaining.length > 0){
+    finalMove(compLocations);
+    setTimeout(compTurn, 1000);
+  }
 }
 
 function compTurn(){
@@ -80,8 +80,8 @@ function compTurn(){
   if(nextMove > 0){
     compNum = nextMove;
   } else {  
-  // pick a random square
-  compNum = remaining[Math.floor(Math.random()*remaining.length)];
+    // pick a random square
+    compNum = remaining[Math.floor(Math.random()*remaining.length)];
   }
   compLocations.push(compNum);
   // update which squares are now available
@@ -110,7 +110,7 @@ function checkForWin(player){
           if(winScore === 3) {
             console.log("Win!");
             winLight(winningCombinations[i]);
-            soreLoser.loadPoints(compLocations);
+            setTimeout(()=> soreLoser.loadPoints(compLocations), 500);
             endGame();
             return;
           } 
@@ -166,7 +166,7 @@ function endGame(){
   // when the player clicks, the game restarts 
   reset.addEventListener("click", reload, false);
 }
-  
+
 function reload(){
   window.location.reload(true);
 }
@@ -178,25 +178,26 @@ class ScribbleCanvas {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
     requestAnimationFrame(evt => this.update(evt));
-    this.pointss = [];
-    this.jitterAmount = 1;
+    this.points = [];
+    this.jitterAmount = 5;
     this.offset = 0;
     this.totalDistance = 0;
+    this.scribbleSpeed = 35;
   } 
   update(){
     // this is the graphics context
     var g = this.canvas.getContext("2d"); 
     g.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    g.strokeStyle = "blue";
+    g.strokeStyle = "maroon";
     g.lineWidth = 5;
+    g.lineJoin = "round";
     g.beginPath();
     g.setLineDash([this.totalDistance]);
-    this.offset = Math.max(0, this.offset - 5);
-    console.log("this.offset ", this.offset);
+    this.offset = Math.max(0, this.offset - this.scribbleSpeed * Math.pow(Math.random(), 5));
     g.lineDashOffset = this.offset;
-        for(var i = 0; i < this.pointss.length; i++){
-      var p = this.pointss[i];
-      g.lineTo(p.x + Math.random() * this.jitterAmount, p.y + Math.random() * this.jitterAmount);
+    for(var i = 0; i < this.points.length; i++){
+      var p = this.points[i];
+      g.lineTo(p.x, p.y);
     } 
     g.stroke();
     // update loop, happens every frame foreverrr
@@ -204,19 +205,39 @@ class ScribbleCanvas {
   }
   loadPoints(moves){
     // go through the loser's moves
-    this.pointss = moves.map(id => document.getElementById("d" + id))
+    this.points = moves.map(id => document.getElementById("d" + id))
     .map(div => div.getBoundingClientRect())
     .map(rect => {
       var x = rect.x + rect.width/2; 
       var y = rect.y + rect.height/2;
-      return {x,y};
-      });
-      console.log(this.pointss);
-      this.totalDistance = 0;
-      for(var i = 0; i < this.pointss.length - 1; i++){
-        this.totalDistance += distanceBetween(this.pointss[i], this.pointss[i+1]);
-        this.offset = this.totalDistance;
+      return {
+        x,
+        y
+      };
+    });
+    var tempPoints = [];
+    for(var i = 0; i < this.points.length - 1; i++){
+      var a = this.points[i];
+      var b = this.points[i+1];
+      var currentDistance = distanceBetween(a, b);
+      var segments = currentDistance/5;
+      for(var j = 0; j < segments; j++){
+        var f = j/segments;
+        var midPoint = lerp(a, b, f);
+        midPoint.x += this.jitterAmount * Math.pow(Math.random(), 5);
+        midPoint.y += this.jitterAmount * Math.pow(Math.random(), 5);
+        tempPoints.push(midPoint);
       }
+    }
+    console.log(this.points);
+    this.totalDistance = 0;
+    this.points = tempPoints;
+    for(var i = 0; i < this.points.length - 1; i++){
+      this.totalDistance += distanceBetween(this.points[i], this.points[i+1]);
+      this.offset = this.totalDistance;
+    }
+  }
+  
 }
 
 function distanceBetween(a, b){
@@ -224,6 +245,17 @@ function distanceBetween(a, b){
   var dy = a.y - b.y;
   var distance = Math.sqrt(dx*dx+dy*dy);
   return distance;
-  }
+}
+
+function lerp(a, b, f){
+  // complement
+  var g = 1-f;
+  return {
+    x: a.x*g + b.x*f,
+    y: a.y*g + b.y*f
+  };
+  
+}
 
 var soreLoser = new ScribbleCanvas();
+
