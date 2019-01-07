@@ -110,7 +110,7 @@ function checkForWin(player){
           if(winScore === 3) {
             console.log("Win!");
             winLight(winningCombinations[i]);
-            soreLoser.loadPoints(compLocations);
+            setTimeout(()=> soreLoser.loadPoints(compLocations), 500);
             endGame();
             return;
           } 
@@ -179,24 +179,25 @@ class ScribbleCanvas {
     this.canvas.height = window.innerHeight;
     requestAnimationFrame(evt => this.update(evt));
     this.pointss = [];
-    this.jitterAmount = 1;
+    this.jitterAmount = 5;
     this.offset = 0;
     this.totalDistance = 0;
+    this.scribbleSpeed = 35;
   } 
   update(){
     // this is the graphics context
     var g = this.canvas.getContext("2d"); 
     g.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    g.strokeStyle = "blue";
+    g.strokeStyle = "maroon";
     g.lineWidth = 5;
+    g.lineJoin = "round";
     g.beginPath();
     g.setLineDash([this.totalDistance]);
-    this.offset = Math.max(0, this.offset - 5);
-    console.log("this.offset ", this.offset);
+    this.offset = Math.max(0, this.offset - this.scribbleSpeed * Math.pow(Math.random(), 5));
     g.lineDashOffset = this.offset;
         for(var i = 0; i < this.pointss.length; i++){
       var p = this.pointss[i];
-      g.lineTo(p.x + Math.random() * this.jitterAmount, p.y + Math.random() * this.jitterAmount);
+      g.lineTo(p.x, p.y);
     } 
     g.stroke();
     // update loop, happens every frame foreverrr
@@ -209,14 +210,34 @@ class ScribbleCanvas {
     .map(rect => {
       var x = rect.x + rect.width/2; 
       var y = rect.y + rect.height/2;
-      return {x,y};
-      });
-      console.log(this.pointss);
-      this.totalDistance = 0;
-      for(var i = 0; i < this.pointss.length - 1; i++){
-        this.totalDistance += distanceBetween(this.pointss[i], this.pointss[i+1]);
-        this.offset = this.totalDistance;
+      return {
+        x,
+        y
+      };
+    });
+    var tempPoints = [];
+    for(var i = 0; i < this.pointss.length - 1; i++){
+      var a = this.pointss[i];
+      var b = this.pointss[i+1];
+      var currentDistance = distanceBetween(a, b);
+      var segments = currentDistance/5;
+      for(var j = 0; j < segments; j++){
+        var f = j/segments;
+        var midPoint = lerp(a, b, f);
+        midPoint.x += this.jitterAmount * Math.pow(Math.random(), 5);
+        midPoint.y += this.jitterAmount * Math.pow(Math.random(), 5);
+        tempPoints.push(midPoint);
       }
+    }
+    console.log(this.pointss);
+    this.totalDistance = 0;
+    this.pointss = tempPoints;
+    for(var i = 0; i < this.pointss.length - 1; i++){
+      this.totalDistance += distanceBetween(this.pointss[i], this.pointss[i+1]);
+      this.offset = this.totalDistance;
+    }
+  }
+  
 }
 
 function distanceBetween(a, b){
@@ -225,5 +246,15 @@ function distanceBetween(a, b){
   var distance = Math.sqrt(dx*dx+dy*dy);
   return distance;
   }
+
+function lerp(a, b, f){
+  // complement
+  var g = 1-f;
+  return {
+    x: a.x*g + b.x*f,
+    y: a.y*g + b.y*f
+};
+  
+}
 
 var soreLoser = new ScribbleCanvas();
