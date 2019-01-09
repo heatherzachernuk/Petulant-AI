@@ -195,9 +195,9 @@ class ScribbleCanvas {
     g.setLineDash([this.totalDistance]);
     this.offset = Math.max(0, this.offset - this.scribbleSpeed * Math.pow(Math.random(), 5));
     g.lineDashOffset = this.offset;
-        for(var i = 0; i < this.pointss.length; i++){
-      var p = this.pointss[i];
-      g.lineTo(p.x, p.y);
+    for(var i = 0; i < this.pointss.length; i++){
+    	var p = this.pointss[i];
+    	g.lineTo(p.x, p.y);
     } 
     g.stroke();
     // update loop, happens every frame foreverrr
