@@ -178,7 +178,7 @@ class ScribbleCanvas {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
     requestAnimationFrame(evt => this.update(evt));
-    this.pointss = [];
+    this.points = [];
     this.jitterAmount = 5;
     this.offset = 0;
     this.totalDistance = 0;
@@ -195,8 +195,8 @@ class ScribbleCanvas {
     g.setLineDash([this.totalDistance]);
     this.offset = Math.max(0, this.offset - this.scribbleSpeed * Math.pow(Math.random(), 5));
     g.lineDashOffset = this.offset;
-    for(var i = 0; i < this.pointss.length; i++){
-    	var p = this.pointss[i];
+    for(var i = 0; i < this.points.length; i++){
+    	var p = this.points[i];
     	g.lineTo(p.x, p.y);
     } 
     g.stroke();
@@ -205,7 +205,7 @@ class ScribbleCanvas {
   }
   loadPoints(moves){
     // go through the loser's moves
-    this.pointss = moves.map(id => document.getElementById("d" + id))
+    this.points = moves.map(id => document.getElementById("d" + id))
     .map(div => div.getBoundingClientRect())
     .map(rect => {
       var x = rect.x + rect.width/2; 
@@ -216,9 +216,9 @@ class ScribbleCanvas {
       };
     });
     var tempPoints = [];
-    for(var i = 0; i < this.pointss.length - 1; i++){
-      var a = this.pointss[i];
-      var b = this.pointss[i+1];
+    for(var i = 0; i < this.points.length - 1; i++){
+      var a = this.points[i];
+      var b = this.points[i+1];
       var currentDistance = distanceBetween(a, b);
       var segments = currentDistance/5;
       for(var j = 0; j < segments; j++){
@@ -229,11 +229,11 @@ class ScribbleCanvas {
         tempPoints.push(midPoint);
       }
     }
-    console.log(this.pointss);
+    console.log(this.points);
     this.totalDistance = 0;
-    this.pointss = tempPoints;
-    for(var i = 0; i < this.pointss.length - 1; i++){
-      this.totalDistance += distanceBetween(this.pointss[i], this.pointss[i+1]);
+    this.points = tempPoints;
+    for(var i = 0; i < this.points.length - 1; i++){
+      this.totalDistance += distanceBetween(this.points[i], this.points[i+1]);
       this.offset = this.totalDistance;
     }
   }
