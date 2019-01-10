@@ -5,7 +5,7 @@ window.addEventListener("load", choosePlayer);
 var modalBackground = document.getElementById("modal-background");
 
 function choosePlayer(){
-    modalBackground.style.display = "block";
+  modalBackground.style.display = "block";
 }
 
 var chooseX= document.getElementById("X");
@@ -45,34 +45,34 @@ listener.addEventListener("click", boxClick, false);
 
 // when the player clicks the box
 function boxClick(box) {
-    // if the of the object clicked is not that of the whole screen...
-    if (box.target !== box.currentTarget) {
-        // get the id of that object
-        var clickedBox = (box.target.id);
-        var boxNum = parseInt(clickedBox.slice(1));
-        if(remaining.indexOf(boxNum) > -1){
-          // stick an X in the box
-          listener.removeEventListener("click", boxClick, false);
-          document.getElementById(clickedBox).innerHTML = player;
-          // add that tile to the player's list of tiles
-          playerLocations.push(boxNum);
-          remaining = remaining.filter(element => element != boxNum);
-          console.log(remaining);
-          if(remaining.length === 0){
-            endGame();  
-          }
-        } else return;
-    } 
-    box.stopPropagation();
-    console.log("player moves so far: ", playerLocations);
-    if(playerLocations.length > 2){
-      checkForWin(playerLocations);
-    }
-    // make sure the game is still going before letting the computer make another move
-    if(winScore !== 3 && remaining.length > 0){
-      finalMove(compLocations);
-      setTimeout(compTurn, 1000);
-    }
+  // if the of the object clicked is not that of the whole screen...
+  if (box.target !== box.currentTarget) {
+    // get the id of that object
+    var clickedBox = (box.target.id);
+    var boxNum = parseInt(clickedBox.slice(1));
+    if(remaining.indexOf(boxNum) > -1){
+      // stick an X in the box
+      listener.removeEventListener("click", boxClick, false);
+      document.getElementById(clickedBox).innerHTML = player;
+      // add that tile to the player's list of tiles
+      playerLocations.push(boxNum);
+      remaining = remaining.filter(element => element != boxNum);
+      console.log(remaining);
+      if(remaining.length === 0){
+        endGame();  
+      }
+    } else return;
+  } 
+  box.stopPropagation();
+  console.log("player moves so far: ", playerLocations);
+  if(playerLocations.length > 2){
+    checkForWin(playerLocations);
+  }
+  // make sure the game is still going before letting the computer make another move
+  if(winScore !== 3 && remaining.length > 0){
+    finalMove(compLocations);
+    setTimeout(compTurn, 1000);
+  }
 }
 
 function compTurn(){
@@ -80,8 +80,8 @@ function compTurn(){
   if(nextMove > 0){
     compNum = nextMove;
   } else {  
-  // pick a random square
-  compNum = remaining[Math.floor(Math.random()*remaining.length)];
+    // pick a random square
+    compNum = remaining[Math.floor(Math.random()*remaining.length)];
   }
   compLocations.push(compNum);
   // update which squares are now available
@@ -166,7 +166,7 @@ function endGame(){
   // when the player clicks, the game restarts 
   reset.addEventListener("click", reload, false);
 }
-  
+
 function reload(){
   window.location.reload(true);
 }
@@ -196,8 +196,8 @@ class ScribbleCanvas {
     this.offset = Math.max(0, this.offset - this.scribbleSpeed * Math.pow(Math.random(), 5));
     g.lineDashOffset = this.offset;
     for(var i = 0; i < this.points.length; i++){
-    	var p = this.points[i];
-    	g.lineTo(p.x, p.y);
+      var p = this.points[i];
+      g.lineTo(p.x, p.y);
     } 
     g.stroke();
     // update loop, happens every frame foreverrr
@@ -245,7 +245,7 @@ function distanceBetween(a, b){
   var dy = a.y - b.y;
   var distance = Math.sqrt(dx*dx+dy*dy);
   return distance;
-  }
+}
 
 function lerp(a, b, f){
   // complement
@@ -253,7 +253,7 @@ function lerp(a, b, f){
   return {
     x: a.x*g + b.x*f,
     y: a.y*g + b.y*f
-};
+  };
   
 }
 
