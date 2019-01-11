@@ -59,10 +59,10 @@ function boxClick(box) {
       remaining = remaining.filter(element => element != boxNum);
       console.log(remaining);
       if(remaining.length === 0){
-        endGame();  
+        endGame();
       }
     } else return;
-  } 
+  }
   box.stopPropagation();
   console.log("player moves so far: ", playerLocations);
   if(playerLocations.length > 2){
@@ -79,7 +79,7 @@ function compTurn(){
   var compNum;
   if(nextMove > 0){
     compNum = nextMove;
-  } else {  
+  } else {
     // pick a random square
     compNum = remaining[Math.floor(Math.random()*remaining.length)];
   }
@@ -100,7 +100,7 @@ function compTurn(){
 function checkForWin(player){
   // go through the list of winning combos
   for(var i = 0; i < winningCombinations.length; i++){
-    // and go through the numbers in the tiles the player has clicked 
+    // and go through the numbers in the tiles the player has clicked
     for(var j = 0; j < player.length; j++){
       // go through the numbers in each winning combination
       for(var k = 0; k < 3; k++){
@@ -113,12 +113,12 @@ function checkForWin(player){
             setTimeout(()=> soreLoser.loadPoints(compLocations), 500);
             endGame();
             return;
-          } 
-        } 
-      } 
-    } 
+          }
+        }
+      }
+    }
     winScore = 0;
-  } 
+  }
 }
 
 function finalMove(comp){
@@ -126,12 +126,12 @@ function finalMove(comp){
   var finScore = 0;
   // go through the list of winning combos
   for(var i = 0; i < winningCombinations.length; i++){
-    // and go through the numbers in the tiles the player has clicked 
+    // and go through the numbers in the tiles the player has clicked
     for(var j = 0; j < comp.length; j++){
       // go through the numbers in each winning combination
       for(var k = 0; k < 3; k++){
         if(winningCombinations[i][k] === comp[j]){
-          finScore++;  
+          finScore++;
         }
         if(finScore === 2) {
           console.log("the array you're looking for: ", winningCombinations[i]);
@@ -141,13 +141,13 @@ function finalMove(comp){
             nextMove = spot[0];
           }
         }
-      }  
+      }
     } finScore = 0;
-  } 
+  }
 }
 
 
-// light up the squares with the winning streak 
+// light up the squares with the winning streak
 function winLight(range){
   for(var element = 0; element < range.length; element++){
     var square = "d"+range[element];
@@ -163,7 +163,7 @@ function endGame(){
   var reset = document.getElementById("restart");
   reset.style.visibility = "visible";
   reset.style.cursor = "pointer";
-  // when the player clicks, the game restarts 
+  // when the player clicks, the game restarts
   reset.addEventListener("click", reload, false);
 }
 
@@ -183,10 +183,10 @@ class ScribbleCanvas {
     this.offset = 0;
     this.totalDistance = 0;
     this.scribbleSpeed = 35;
-  } 
+  }
   update(){
     // this is the graphics context
-    var g = this.canvas.getContext("2d"); 
+    var g = this.canvas.getContext("2d");
     g.clearRect(0, 0, this.canvas.width, this.canvas.height);
     g.strokeStyle = "maroon";
     g.lineWidth = 5;
@@ -198,17 +198,17 @@ class ScribbleCanvas {
     for(var i = 0; i < this.points.length; i++){
       var p = this.points[i];
       g.lineTo(p.x, p.y);
-    } 
+    }
     g.stroke();
     // update loop, happens every frame foreverrr
-    requestAnimationFrame(evt => this.update(evt));  
+    requestAnimationFrame(evt => this.update(evt));
   }
   loadPoints(moves){
     // go through the loser's moves
     this.points = moves.map(id => document.getElementById("d" + id))
     .map(div => div.getBoundingClientRect())
     .map(rect => {
-      var x = rect.x + rect.width/2; 
+      var x = rect.x + rect.width/2;
       var y = rect.y + rect.height/2;
       return {
         x,
@@ -237,7 +237,7 @@ class ScribbleCanvas {
       this.offset = this.totalDistance;
     }
   }
-  
+
 }
 
 function distanceBetween(a, b){
@@ -254,8 +254,7 @@ function lerp(a, b, f){
     x: a.x*g + b.x*f,
     y: a.y*g + b.y*f
   };
-  
+
 }
 
 var soreLoser = new ScribbleCanvas();
-
